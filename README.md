@@ -21,3 +21,21 @@ When a piece of metadata fails to be identified the metadata should be run throu
 metadata cleaner in an effort to remove this useless gunk that might be preventing a match.
 If the cleaner sucessfully removes gunk, the cleaned metadata should be looked up again, hoping
 that a match will be found this time.
+
+Installation
+------------
+
+To install this python module, simply do:
+
+```
+python setup.py install
+```
+
+Running tests
+-------------
+
+To run the internal unit tests, run:
+
+```
+./test.py
+```
