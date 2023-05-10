@@ -12,23 +12,29 @@ Metadata cleaner
 ----------------
 
 One component in this toolkit is the metadata cleaner, which removes (often) useless gunk
-from a metadata string:
+from a metadata recording string:
 
    "Tabula Rasa (feat. Lorraine Weiss)" -> "Tabula Rasa"       
    "Don't Give up - 2001 remaster" -> "Don't Give up"
+
+This library also supports artist name cleaning:
+
+   "Amy Winhouse, Lorraine Weiss" -> "Amy Winehouse"
 
 When a piece of metadata fails to be identified the metadata should be run through the
 metadata cleaner in an effort to remove this useless gunk that might be preventing a match.
 If the cleaner sucessfully removes gunk, the cleaned metadata should be looked up again, hoping
 that a match will be found this time.
 
-To use this class, instantiate the MetadataCleaner class and call the clean method:
+To use this class, instantiate the MetadataCleaner class and call the clean_recording or
+clean_artist methods:
 
 ```
 from lb_matching_tools.cleaner import MetadataCleaner
 
 mc = MetadataCleaner()
-print(mc.clean("Tabula Rasa (feat. Lorraine Weiss)"))
+mc.clean_recording("Tabula Rasa (feat. Lorraine Weiss)")
+mc.clean_recording("Amy Winhouse, Lorraine Weiss")
 ```
 
 
