@@ -22,6 +22,16 @@ metadata cleaner in an effort to remove this useless gunk that might be preventi
 If the cleaner sucessfully removes gunk, the cleaned metadata should be looked up again, hoping
 that a match will be found this time.
 
+To use this class, instantiate the MetadataCleaner class and call the clean method:
+
+```
+from lb_matching_tools.cleaner import MetadataCleaner
+
+mc = MetadataCleaner()
+print(mc.clean("Tabula Rasa (feat. Lorraine Weiss)"))
+```
+
+
 Installation
 ------------
 
