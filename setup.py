@@ -7,6 +7,7 @@ setuptools.setup(
     name="lb-matching-tools",
     author="Robert Kaye",
     author_email="rob@metabrainz.org",
+    version="0.1.0",
     description="ListenBrainz tools for matching metadata to and from MusicBrainz.",
     long_description=long_description,
     long_description_content_type="text/markdown",
