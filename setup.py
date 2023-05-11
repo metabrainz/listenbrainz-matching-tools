@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="listenbrainz-matching-tools",
+    name="lb-matching-tools",
     author="Robert Kaye",
     author_email="rob@metabrainz.org",
     description="ListenBrainz tools for matching metadata to and from MusicBrainz.",

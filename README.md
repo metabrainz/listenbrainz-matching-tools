@@ -34,7 +34,7 @@ from lb_matching_tools.cleaner import MetadataCleaner
 
 mc = MetadataCleaner()
 mc.clean_recording("Tabula Rasa (feat. Lorraine Weiss)")
-mc.clean_recording("Amy Winhouse, Lorraine Weiss")
+mc.clean_artist("Amy Winhouse, Lorraine Weiss")
 ```
 
 
