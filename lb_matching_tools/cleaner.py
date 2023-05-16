@@ -1,4 +1,5 @@
-import regex as re
+import re
+import regex
 
 
 class MetadataCleaner:
@@ -33,10 +34,10 @@ class MetadataCleaner:
     def __init__(self, preferred_script = "Latin"):
         self.recording_expressions = [re.compile(exp, re.IGNORECASE) for exp in self.RECORDING_EXPRESSIONS]
         self.artist_expressions = [re.compile(exp, re.IGNORECASE) for exp in self.ARTIST_EXPRESSIONS]
-        self.foreign_script_expression = re.compile(r"[^\p{Script=Common}\p{Script=" + preferred_script + r"}]+")
+        self.foreign_script_expression = regex.compile(r"[^\p{Script=Common}\p{Script=" + preferred_script + r"}]+")
 
     def drop_foreign_chars(self, text: str):
-        return re.sub(self.foreign_script_expression, "", text).strip()
+        return regex.sub(self.foreign_script_expression, "", text).strip()
 
     def clean_recording(self, text: str):
         text = self.drop_foreign_chars(text)
