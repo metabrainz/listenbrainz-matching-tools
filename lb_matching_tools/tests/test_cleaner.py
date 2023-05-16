@@ -25,6 +25,9 @@ TEST_STRINGS = [
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
     ("artist", 'Dan No Ura 壇ノ浦の戦い', 'Dan No Ura'),
+    ("artist", "Babylumalotoroony and the Jerry Lewis Bone-A-Thons featuring Athena", "Babylumalotoroony and the Jerry Lewis Bone-A-Thons"),
+    ("artist", "Wilhelm Schneider-Clauss & Heimersdorfer Kinderchor", "Wilhelm Schneider-Clauss"),
+    ("artist", "Jim Foster with The Kountry Kut-Ups", "Jim Foster")
 ]
 
 def suite():

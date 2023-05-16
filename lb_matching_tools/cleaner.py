@@ -29,6 +29,10 @@ class MetadataCleaner:
     ARTIST_EXPRESSIONS = [
         # Amy Winehouse, Weird Al Yankovic
         r"\s*?(?P<title>.+?)(?:\s*?,)(?P<comma>.*)",
+
+        # Wilhelm Schneider Clauss with Heimersdorfer Kinderchor
+        # Wilhelm Schneider Clauss & Heimersdorfer Kinderchor
+        r"\s*?(?P<title>.+?)(?:\s+?(&|with))(?P<dash>.*)",
     ]
 
     def __init__(self, preferred_script = "Latin"):
