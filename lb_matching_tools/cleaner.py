@@ -1,4 +1,4 @@
-import re
+import regex as re
 
 
 class MetadataCleaner:
@@ -30,11 +30,16 @@ class MetadataCleaner:
         r"\s*?(?P<title>.+?)(?:\s*?,)(?P<comma>.*)",
     ]
 
-    def __init__(self):
+    def __init__(self, preferred_script = "Latin"):
         self.recording_expressions = [re.compile(exp, re.IGNORECASE) for exp in self.RECORDING_EXPRESSIONS]
         self.artist_expressions = [re.compile(exp, re.IGNORECASE) for exp in self.ARTIST_EXPRESSIONS]
+        self.foreign_script_expression = re.compile(r"[^\p{Script=Common}\p{Script=" + preferred_script + r"}]+")
+
+    def drop_foreign_chars(self, text: str):
+        return re.sub(self.foreign_script_expression, "", text).strip()
 
     def clean_recording(self, text: str):
+        text = self.drop_foreign_chars(text)
 
         for i, exp in enumerate(self.recording_expressions):
             m = self.recording_expressions[i].match(text)

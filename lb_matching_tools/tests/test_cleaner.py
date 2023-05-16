@@ -21,8 +21,10 @@ TEST_STRINGS = [
     ("recording", '"Beckoning Darkness" ~ Menu', '"Beckoning Darkness"'),
     ("recording", 'Big Phat at Glen Echo, MD Contradance / CALLER: Ridge Kennedy', 'Big Phat at Glen Echo, MD Contradance'),
     ("recording", 'Kikagaku Moyo/幾何学模様', 'Kikagaku Moyo'),
+    ("recording", '山地情歌 San-Di Love Song', 'San-Di Love Song'),
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
+    ("artist", 'Dan No Ura 壇ノ浦の戦い', 'Dan No Ura'),
 ]
 
 def suite():
