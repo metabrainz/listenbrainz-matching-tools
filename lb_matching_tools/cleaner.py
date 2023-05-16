@@ -5,19 +5,18 @@ import regex
 class MetadataCleaner:
 
     RECORDING_EXPRESSIONS = [
-        # Track name (guff #1) (guff #2)
+        # This track is crap (2018 remaster)
+        r"\s*?(?P<title>[^(]+?)(?:\s*?\()(?P<dash>.*)\)$",
+
         # Tabula Rasa (feat. Lorraine Weiss)
         # TO STAY ALIVE [Feat. SkullyOSkully]
-        r"(?P<title>.+?)\s*?(?P<feat>(?:\[|\()?(?:feat(?:uring)?|ft)(?=\b)\.?)\s*?(?P<artists>.+)",
+        r"(?P<title>.+?)\s+?(?P<feat>(?:\[|\()?(?:feat(?:uring)?|ft)(?=\b)\.?)\s*?(?P<artists>.+)",
 
         # For The Love feat. Amy True
         # For The Love ft. Amy True
         # For The Love ft Amy True
         # Birds Without a Feather -> Nothing!
-        r"\s*?(?P<title>.+?)\s*?(?P<feat>\(?(?:feat(?:uring)?|ft)(?=\b)\.?)\s*?(?P<artists>.+)\s*",
-
-        # This track is crap (2018 remaster)
-        r"\s*?(?P<title>[^(]+?)(?:\s*?\()(?P<dash>.*)\)$",
+        r"\s*?(?P<title>.+?)\s+?(?P<feat>\(?(?:feat(?:uring)?|ft)(?=\b)\.?)\s*?(?P<artists>.+)\s*",
 
         # Don't Give up - 2001 remaster
         r"\s*?(?P<title>.+?)(?:\s+?[\u2010\u2012\u2013\u2014~/-])(?P<dash>.*)",

@@ -8,6 +8,8 @@ TEST_STRINGS = [
     ("recording", "For The Love feat. Amy True", "For The Love"),
     ("recording", "For The Love ft. Amy True", "For The Love"),
     ("recording", "For The Love ft Amy True", "For The Love"),
+    ("recording", "For The Lovefeat. Amy True", "For The Lovefeat. Amy True"),
+    ("recording", "Amoeba (raft boy)", "Amoeba"),
     ("recording", "Birds Without a Feather", "Birds Without a Feather"),
     ("recording", "Don't Give up - 2001 remaster", "Don't Give up"),
     ("recording", 'Define Self-delusion at Dictionary.Com', 'Define Self-delusion at Dictionary.Com'),
@@ -22,6 +24,13 @@ TEST_STRINGS = [
     ("recording", 'Big Phat at Glen Echo, MD Contradance / CALLER: Ridge Kennedy', 'Big Phat at Glen Echo, MD Contradance'),
     ("recording", 'Kikagaku Moyo/幾何学模様', 'Kikagaku Moyo'),
     ("recording", '山地情歌 San-Di Love Song', 'San-Di Love Song'),
+    ("recording", 'Madness (DJ Gollum feat. DJ Cap Remix)', 'Madness'),
+    ("recording", 'Other Place [Live]', 'Other Place'),
+    ("recording", 'Other Place {Live}', 'Other Place'),
+    ("recording", 'Other Place <Live>', 'Other Place'),
+
+
+
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
     ("artist", 'Dan No Ura 壇ノ浦の戦い', 'Dan No Ura'),
