@@ -6,7 +6,7 @@ class MetadataCleaner:
 
     RECORDING_EXPRESSIONS = [
         # This track is crap (2018 remaster)
-        r"\s*?(?P<title>[^(]+?)(?:\s*?\()(?P<dash>.*)\)$",
+        r"\s*?(?P<title>.+?)\s+(?P<enclosed>\(.+\)|\[.+\]|\{.+\}|\<.+\>)$",
 
         # Tabula Rasa (feat. Lorraine Weiss)
         # TO STAY ALIVE [Feat. SkullyOSkully]
