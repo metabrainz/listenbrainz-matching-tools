@@ -9,6 +9,7 @@ TEST_STRINGS = [
     ("recording", "For The Love ft. Amy True", "For The Love"),
     ("recording", "For The Love ft Amy True", "For The Love"),
     ("recording", "For The Lovefeat. Amy True", "For The Lovefeat. Amy True"),
+    ("recording", "For The Love feat.Amy True", "For The Love"),
     ("recording", "Amoeba (raft boy)", "Amoeba"),
     ("recording", "Birds Without a Feather", "Birds Without a Feather"),
     ("recording", "Don't Give up - 2001 remaster", "Don't Give up"),
