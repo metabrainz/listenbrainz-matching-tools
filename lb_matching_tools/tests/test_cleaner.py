@@ -10,10 +10,19 @@ TEST_STRINGS = [
     ("recording", "For The Love ft Amy True", "For The Love"),
     ("recording", "Birds Without a Feather", "Birds Without a Feather"),
     ("recording", "Don't Give up - 2001 remaster", "Don't Give up"),
+    ("recording", 'Define Self-delusion at Dictionary.Com', 'Define Self-delusion at Dictionary.Com'),
     ("recording", "Running up that hill (a deal with god) - 2018 Remaster", "Running up that hill (a deal with god)"),
     ("recording", "TO STAY ALIVE [Feat. SkullyOSkully]", "TO STAY ALIVE"),
-    ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("recording", "Amy Winehouse, Weird Al", "Amy Winehouse, Weird Al"),
+    ("recording", "!!ESIRPRUS (Ver. 2)", "!!ESIRPRUS"),
+    ("recording", '"...as others see us...": I. Henry VIII (1491-1547)', '"...as others see us...": I. Henry VIII'),
+    ("recording", "Herbert West – Reanimator", "Herbert West"),  # en dash
+    ("recording", "Philip the Chancelor: Clavus pungens — 2vv conductus", "Philip the Chancelor: Clavus pungens"), # em dash
+    ("recording", '"Beckoning Darkness" ~ Menu', '"Beckoning Darkness"'),
+    ("recording", 'Big Phat at Glen Echo, MD Contradance / CALLER: Ridge Kennedy', 'Big Phat at Glen Echo, MD Contradance'),
+    ("recording", 'Kikagaku Moyo/幾何学模様', 'Kikagaku Moyo'),
+    ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
+    ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
 ]
 
 def suite():

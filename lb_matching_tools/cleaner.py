@@ -15,8 +15,14 @@ class MetadataCleaner:
         # Birds Without a Feather -> Nothing!
         r"\s*?(?P<title>.+?)\s*?(?P<feat>\(?(?:feat(?:uring)?|ft)(?=\b)\.?)\s*?(?P<artists>.+)\s*",
 
+        # This track is crap (2018 remaster)
+        r"\s*?(?P<title>[^(]+?)(?:\s*?\()(?P<dash>.*)\)$",
+
         # Don't Give up - 2001 remaster
-        r"\s*?(?P<title>.+?)(?:\s*?-)(?P<dash>.*)",
+        r"\s*?(?P<title>.+?)(?:\s+?[\u2010\u2012\u2013\u2014~/-])(?P<dash>.*)",
+
+        # Kikagaku Moyo/幾何学模様
+        r"\s*?(?P<title>.+?)(?:\s*?[~/])(?P<dash>.*)",
     ]
 
     ARTIST_EXPRESSIONS = [
