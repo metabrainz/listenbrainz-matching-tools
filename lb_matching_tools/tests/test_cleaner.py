@@ -28,8 +28,10 @@ TEST_STRINGS = [
     ("recording", 'Other Place [Live]', 'Other Place'),
     ("recording", 'Other Place {Live}', 'Other Place'),
     ("recording", 'Other Place <Live>', 'Other Place'),
-
-
+    ("recording", ')--- ---x--- ---(', ')--- ---x--- ---('),
+    ("recording", 'T-Ball Rag', 'T-Ball Rag'),
+    ("recording", '[intentionally left blank]', '[intentionally left blank]'),
+    ("recording", 'Babylumalotoroony and the Jerry Lewis Bone-A-Thons featuring Athena', 'Babylumalotoroony and the Jerry Lewis Bone-A-Thons'),
 
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),

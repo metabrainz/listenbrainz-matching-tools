@@ -1,6 +1,12 @@
 Some scatchpad notes about this project
 =======================================
 
+TODO:
+
+- A dash in the first half of a string should be questioned.
+- Never split inside brackets
+
+
 These are the queries that collected the test data:
 
 ```
