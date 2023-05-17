@@ -3,7 +3,7 @@ Some scatchpad notes about this project
 
 TODO:
 
-- A dash in the first half of a string should be questioned.
+- A dash in the first third of a string should not split the string. (implemented but could be better)
 - Never split inside brackets
 
 

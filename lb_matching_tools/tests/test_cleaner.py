@@ -33,6 +33,11 @@ TEST_STRINGS = [
     ("recording", ')--- ---x--- ---(', ')--- ---x--- ---('),
     ("recording", '[intentionally left blank]', '[intentionally left blank]'),
     ("recording", 'Babylumalotoroony and the Jerry Lewis Bone-A-Thons featuring Athena', 'Babylumalotoroony and the Jerry Lewis Bone-A-Thons'),
+    ("recording", "Guff (Johann Sebastian - Bach)", "Guff"), 
+    ("recording", "-10 on the Care-Meter", "-10 on the Care-Meter"), 
+    ("recording", "264 - Das Herz", "264 - Das Herz"),
+    # This should not be split, because a / ~ - inside () [] {} <> should not be split
+    ("recording", "(You're So Square) Baby I Don't Care (Movie Edit, 2013, Take 16/2021, Take 6) Binaural", "(You're So Square) Baby I Don't Care (Movie Edit, 2013, Take 16/2021, Take 6) Binaural"),
 
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
