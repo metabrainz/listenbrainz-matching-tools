@@ -29,8 +29,8 @@ TEST_STRINGS = [
     ("recording", 'Other Place [Live]', 'Other Place'),
     ("recording", 'Other Place {Live}', 'Other Place'),
     ("recording", 'Other Place <Live>', 'Other Place'),
+    ("recording", 'T - Ball Rag', 'T - Ball Rag'),
     ("recording", ')--- ---x--- ---(', ')--- ---x--- ---('),
-    ("recording", 'T-Ball Rag', 'T-Ball Rag'),
     ("recording", '[intentionally left blank]', '[intentionally left blank]'),
     ("recording", 'Babylumalotoroony and the Jerry Lewis Bone-A-Thons featuring Athena', 'Babylumalotoroony and the Jerry Lewis Bone-A-Thons'),
 

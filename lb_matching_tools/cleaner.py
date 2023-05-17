@@ -1,6 +1,10 @@
 import re
 import regex
 
+def hyphen_split_check(original, cleaned):
+    if len(cleaned) < len(original) / 3:
+        return False
+    return True
 
 class MetadataCleaner:
 
@@ -46,7 +50,16 @@ class MetadataCleaner:
         for i, exp in enumerate(self.recording_expressions):
             m = self.recording_expressions[i].match(text)
             if m is not None:
-                return m.groups()[0]
+                cleaned = m.groups()[0]
+
+                # This is ugly.
+                if i == 2:
+                    if hyphen_split_check(text, cleaned):
+                        return cleaned
+                    else:
+                        return text
+                else:
+                    return cleaned
 
         return text
 
