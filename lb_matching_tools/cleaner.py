@@ -50,6 +50,7 @@ class MetadataCleaner:
                 cleaned = m.groups()[0]
 
                 # This is ugly.
+                # Could be avoided by using a list of keywords which indicate crap and e.g. baking them into a lookahead expression.
                 if i == 2:
                     if hyphen_split_check(text, cleaned):
                         return cleaned
