@@ -45,7 +45,7 @@ class MetadataCleaner:
         text = self.drop_foreign_chars(text)
 
         for i, exp in enumerate(self.recording_expressions):
-            m = self.recording_expressions[i].match(text)
+            m = exp.match(text)
             if m is not None:
                 cleaned = m.groups()[0]
 
@@ -67,7 +67,7 @@ class MetadataCleaner:
             return cleaned
 
         for i, exp in enumerate(self.artist_expressions):
-            m = self.artist_expressions[i].match(text)
+            m = exp.match(text)
             if m is not None:
                 return m.groups()[0]
 
