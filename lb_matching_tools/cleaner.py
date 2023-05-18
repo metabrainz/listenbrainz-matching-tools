@@ -21,10 +21,7 @@ class MetadataCleaner:
         r"(?P<title>.+?)\s+?(?P<feat>[\[\(]?(?:feat(?:uring)?|ft)\b\.?)\s*?(?P<artists>.+)\s*",
 
         # Don't Give up - 2001 remaster
-        r"(?P<title>.+?)(?:\s+?[\u2010\u2012\u2013\u2014~/-])(?P<dash>.*)",
-
-        # Kikagaku Moyo/幾何学模様
-        r"(?P<title>.+?)(?:\s*?[~/])(?P<dash>.*)",
+        r"(?P<title>.+?)(?:\s+?[\u2010\u2012\u2013\u2014~/-])(?![^(]*\))(?P<dash>.*)",
     ]
 
     ARTIST_EXPRESSIONS = [
@@ -48,11 +45,12 @@ class MetadataCleaner:
         text = self.drop_foreign_chars(text)
 
         for i, exp in enumerate(self.recording_expressions):
-            m = self.recording_expressions[i].match(text)
+            m = exp.match(text)
             if m is not None:
                 cleaned = m.groups()[0]
 
                 # This is ugly.
+                # Could be avoided by using a list of keywords which indicate crap and e.g. baking them into a lookahead expression.
                 if i == 2:
                     if hyphen_split_check(text, cleaned):
                         return cleaned
@@ -70,7 +68,7 @@ class MetadataCleaner:
             return cleaned
 
         for i, exp in enumerate(self.artist_expressions):
-            m = self.artist_expressions[i].match(text)
+            m = exp.match(text)
             if m is not None:
                 return m.groups()[0]
 
