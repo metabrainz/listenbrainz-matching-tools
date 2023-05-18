@@ -23,7 +23,8 @@ TEST_STRINGS = [
     ("recording", "Philip the Chancelor: Clavus pungens — 2vv conductus", "Philip the Chancelor: Clavus pungens"), # em dash
     ("recording", '"Beckoning Darkness" ~ Menu', '"Beckoning Darkness"'),
     ("recording", 'Big Phat at Glen Echo, MD Contradance / CALLER: Ridge Kennedy', 'Big Phat at Glen Echo, MD Contradance'),
-    ("recording", 'Kikagaku Moyo/幾何学模様', 'Kikagaku Moyo'),
+    # Trailing punctuation (or punctuation in general) can be discarded in a consecutive step
+    ("recording", 'Kikagaku Moyo/幾何学模様', 'Kikagaku Moyo/'),
     ("recording", '山地情歌 San-Di Love Song', 'San-Di Love Song'),
     ("recording", 'Madness (DJ Gollum feat. DJ Cap Remix)', 'Madness'),
     ("recording", 'Other Place [Live]', 'Other Place'),

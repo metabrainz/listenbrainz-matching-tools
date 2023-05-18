@@ -21,10 +21,7 @@ class MetadataCleaner:
         r"(?P<title>.+?)\s+?(?P<feat>[\[\(]?(?:feat(?:uring)?|ft)\b\.?)\s*?(?P<artists>.+)\s*",
 
         # Don't Give up - 2001 remaster
-        r"(?P<title>.+?)(?:\s+?[\u2010\u2012\u2013\u2014~/-])(?P<dash>.*)",
-
-        # Kikagaku Moyo/幾何学模様
-        r"(?P<title>.+?)(?:\s*?[~/])(?P<dash>.*)",
+        r"(?P<title>.+?)(?:\s+?[\u2010\u2012\u2013\u2014~/-])(?![^(]*\))(?P<dash>.*)",
     ]
 
     ARTIST_EXPRESSIONS = [
