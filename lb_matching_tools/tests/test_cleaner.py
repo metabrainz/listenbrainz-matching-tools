@@ -38,6 +38,10 @@ TEST_STRINGS = [
     ("recording", "264 - Das Herz", "264 - Das Herz"),
     # This should not be split, because a / ~ - inside () [] {} <> should not be split
     ("recording", "(You're So Square) Baby I Don't Care (Movie Edit, 2013, Take 16/2021, Take 6) Binaural", "(You're So Square) Baby I Don't Care (Movie Edit, 2013, Take 16/2021, Take 6) Binaural"),
+    ("recording", "this random text (quite worthy!)", "this random text (quite worthy!)"),
+    ("recording", "this random text (released 2018)", "this random text"),
+    ("recording", "this random text (demo session)", "this random text"),
+    ("recording", "this random text (tryout tape)", "this random text"),
 
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
