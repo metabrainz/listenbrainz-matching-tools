@@ -1,86 +1,10 @@
 import re
 import regex
 
+from lb_matching_tools.guff import GUFF_PAREN_WORDS
+
 WORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyzªµºÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
 SYMBOLS = "1234567890!@#$%^&*()-=_+[]{};\"|;'\\<>?/.,~`"
-GUFF_PAREN_WORDS = [
-    "a_cappella",
-    "acoustic",
-    "bonus",  
-    "censored",
-    "clean",
-    "club",                                                                     
-    "clubmix",
-    "composition",
-    "cut",
-    "dance",
-    "demo",
-    "dialogue",
-    "dirty",                                  
-    "edit",
-    "excerpt",
-    "explicit",
-    "extended",
-    "instrumental",
-    "interlude",
-    "intro",
-    "karaoke",
-    "live",
-    "long",                   
-    "main",
-    "maxi",
-    "megamix",
-    "mix",
-    "mono",
-    "official",
-    "orchestral",
-    "original",
-    "outro",
-    "outtake",
-    "outtakes",
-    "piano",
-    "quadraphonic",
-    "radio",
-    "rap",
-    "re_edit",
-    "reedit",
-    "refix",
-    "rehearsal",
-    "reinterpreted",
-    "release"
-    "released"
-    "remake",
-    "remastered",
-    "remaster",
-    "master",  
-    "remix",
-    "remixed",
-    "remode",
-    "reprise",                                 
-    "rework",
-    "reworked",
-    "rmx",
-    "session",
-    "short",
-    "single",
-    "skit",
-    "stereo",
-    "studio",
-    "take",
-    "takes",
-    "tape",
-    "track",
-    "uncensored",
-    "unknown",
-    "unplugged",
-    "untitled",
-    "version",
-    "video",
-    "vocal",
-    "vs",                             
-    "with",
-    "without"
-]
 
 
 def hyphen_split_check(original, cleaned):
@@ -129,29 +53,25 @@ class MetadataCleaner:
         return regex.sub(self.foreign_script_expression, "", text).strip()
 
     def is_paren_text_likely_guff(self, paren_text):
-        
+        """
+            Given some text found in a paren, guess to see if its guff (useless meta info) or relevant info for matching a track.
+            Return True if the given text is considered guff.
+        """
+
         paren_text = paren_text.lower()
-        
-        print(f"start: {paren_text}") 
-        
         before_len = len(paren_text)
-    
-        # Remove guff words from text 
+
+        # Remove guff words from text
         for guff in GUFF_PAREN_WORDS:
             paren_text = paren_text.replace(guff, "")
 
-        print(f"  mid: {paren_text}") 
-    
-        # Check to see if we find a year (19## or 20##). If we do, remove it    
+        # Check to see if we find a year (19## or 20##). If we do, remove it
         paren_text = self.paren_guff_expression.sub("", paren_text)
-
         replaced = before_len - len(paren_text)
-        
-        print(f"  end: {paren_text} (replaced {replaced})")        
-    
+
         # Calculate the number of "characters" vs "symbols" for what is leftover
         chars = 0
-        guff_chars = replaced 
+        guff_chars = replaced
         for ch in paren_text.lower():
 
             if ch in SYMBOLS:
@@ -162,15 +82,37 @@ class MetadataCleaner:
             if ch in WORD_CHARS:
                 chars += 1
 
-        if guff_chars >= chars:
-            return True
+        if guff_chars <= chars:
+            return False
 
-        return False
+        return True
 
+    def paren_checker(self, text):
+        """
+            Check to see if the cleaned fragment contains a split paren (), {}, [], <>. If it does, return False, otherwise True.
+        """
+
+        if text.count("(") != text.count(")"):
+            return False
+
+        if text.count("<") != text.count(">"):
+            return False
+
+        if text.count("[") != text.count("]"):
+            return False
+
+        if text.count("{") != text.count("}"):
+            return False
+
+        return True
 
     def clean_recording(self, text: str):
+        """
+            Run the metadata cleaner against a recording name. Returns the cleaned string, which may be unchanged from the given string.
+        """
         text = self.drop_foreign_chars(text)
 
+        cleaned = ""
         for i, exp in enumerate(self.recording_expressions):
             m = self.recording_expressions[i].match(text)
             if m is not None:
@@ -179,25 +121,30 @@ class MetadataCleaner:
                     paren_text = m.group('enclosed')
                     is_guff_text = self.is_paren_text_likely_guff(paren_text[1:-1])
                     if is_guff_text:
-                        print(f"text {paren_text} -> {is_guff_text}")
+                        return m.groups()[0]
+                    else:
                         continue
                 except IndexError:
-                    pass
+                    cleaned = m.groups()[0]
 
-                cleaned = m.groups()[0]
-
+                # Check to make sure the regexes didn't produce crap
                 # This is ugly.
                 if i == 2:
-                    if hyphen_split_check(text, cleaned):
-                        return cleaned
-                    else:
-                        return text
-                else:
-                    return cleaned
+                    if not hyphen_split_check(text, cleaned):
+                        cleaned = text
 
-        return text
+                if not self.paren_checker(cleaned):
+                    cleaned = text
+
+        if len(cleaned) > 0:
+            return cleaned
+        else:
+            return text
 
     def clean_artist(self, text: str):
+        """
+            Run the metadata cleaner against an artist name. Returns the cleaned string, which may be unchanged from the given string.
+        """
 
         cleaned = self.clean_recording(text)
         if text != cleaned:
@@ -209,5 +156,3 @@ class MetadataCleaner:
                 return m.groups()[0]
 
         return text
-
-
