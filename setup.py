@@ -19,7 +19,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.7',
-    install_requires=[ regex ],
+    install_requires=[ 'regex' ],
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
 )
