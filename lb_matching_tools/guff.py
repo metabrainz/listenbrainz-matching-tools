@@ -1,5 +1,5 @@
 GUFF_PAREN_WORDS = [
-    "a_cappella",
+    "a cappella",
     "acoustic",
     "bonus",  
     "censored",
@@ -37,7 +37,7 @@ GUFF_PAREN_WORDS = [
     "quadraphonic",
     "radio",
     "rap",
-    "re_edit",
+    "re-edit",
     "reedit",
     "refix",
     "rehearsal",
