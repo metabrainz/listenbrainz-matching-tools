@@ -50,7 +50,12 @@ class MetadataCleaner:
         self.letter_expression = regex.compile(r"\p{Letter}")
 
     def drop_foreign_chars(self, text: str):
-        return regex.sub(self.foreign_script_expression, "", text).strip()
+        remaining_text = regex.sub(self.foreign_script_expression, "", text).strip()
+        # only return the remaining text if it still contains at least one letter
+        if regex.search(self.letter_expression, remaining_text):
+            return remaining_text
+        else:
+            return text
 
     def is_paren_text_likely_guff(self, paren_text):
         """
@@ -108,7 +113,7 @@ class MetadataCleaner:
         """
             Run the metadata cleaner against a recording name. Returns the cleaned string, which may be unchanged from the given string.
         """
-        #text = self.drop_foreign_chars(text)
+        text = self.drop_foreign_chars(text)
 
         cleaned = ""
         for i, exp in enumerate(self.recording_expressions):
