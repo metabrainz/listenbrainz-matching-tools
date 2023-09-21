@@ -51,6 +51,7 @@ TEST_STRINGS = [
     ("recording", "this random text (tryout tape)", "this random text"),
     ("recording", "I Miss You (Howie B mix)", "I Miss You (Howie B mix)"),
     ("recording", "Run Jozi (Godly)", "Run Jozi (Godly)"),
+    ("recording", "Όσο Και Να Σ' Αγαπάω (Υπ' Ευθύνη Μου)", "Όσο Και Να Σ' Αγαπάω (Υπ' Ευθύνη Μου)"),
 
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
