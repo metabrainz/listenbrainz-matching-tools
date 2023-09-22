@@ -52,6 +52,8 @@ TEST_STRINGS = [
     ("recording", "I Miss You (Howie B mix)", "I Miss You (Howie B mix)"),
     ("recording", "Run Jozi (Godly)", "Run Jozi (Godly)"),
     ("recording", "Όσο Και Να Σ' Αγαπάω (Υπ' Ευθύνη Μου)", "Όσο Και Να Σ' Αγαπάω (Υπ' Ευθύνη Μου)"),
+    ("recording", "Όσο Και Να Σ' Αγαπάω (2018 remaster)", "Όσο Και Να Σ' Αγαπάω"),
+    ("recording", "Όσο Και Να Σ' Αγαπάω - Remix 2023", "Όσο Και Να Σ' Αγαπάω"),
 
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),

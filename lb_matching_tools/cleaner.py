@@ -113,8 +113,6 @@ class MetadataCleaner:
         """
             Run the metadata cleaner against a recording name. Returns the cleaned string, which may be unchanged from the given string.
         """
-        text = self.drop_foreign_chars(text)
-
         cleaned = ""
         for i, exp in enumerate(self.recording_expressions):
             m = self.recording_expressions[i].match(text)
@@ -139,10 +137,10 @@ class MetadataCleaner:
                 if not self.paren_checker(cleaned):
                     cleaned = text
 
-        if len(cleaned) > 0:
-            return cleaned
-        else:
-            return text
+        if not len(cleaned):
+            cleaned = text
+
+        return self.drop_foreign_chars(cleaned)
 
     def clean_artist(self, text: str):
         """
