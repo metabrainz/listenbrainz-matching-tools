@@ -51,10 +51,14 @@ TEST_STRINGS = [
     ("recording", "this random text (tryout tape)", "this random text"),
     ("recording", "I Miss You (Howie B mix)", "I Miss You (Howie B mix)"),
     ("recording", "Run Jozi (Godly)", "Run Jozi (Godly)"),
+    ("recording", "Όσο Και Να Σ' Αγαπάω (Υπ' Ευθύνη Μου)", "Όσο Και Να Σ' Αγαπάω (Υπ' Ευθύνη Μου)"),
+    ("recording", "Όσο Και Να Σ' Αγαπάω (2018 remaster)", "Όσο Και Να Σ' Αγαπάω"),
+    ("recording", "Όσο Και Να Σ' Αγαπάω - Remix 2023", "Όσο Και Να Σ' Αγαπάω"),
 
     ("artist", "Amy Winehouse, Weird Al", "Amy Winehouse"),
     ("artist", "((( Punchline Paradise )))", "((( Punchline Paradise )))"),
     ("artist", 'Dan No Ura 壇ノ浦の戦い', 'Dan No Ura'),
+    ("artist", '4 Dan No Ura 壇ノ浦の戦い', '4 Dan No Ura'),
     ("artist", "Babylumalotoroony and the Jerry Lewis Bone-A-Thons featuring Athena", "Babylumalotoroony and the Jerry Lewis Bone-A-Thons"),
     ("artist", "Wilhelm Schneider-Clauss & Heimersdorfer Kinderchor", "Wilhelm Schneider-Clauss"),
     ("artist", "Jim Foster with The Kountry Kut-Ups", "Jim Foster")

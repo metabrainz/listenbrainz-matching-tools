@@ -3,7 +3,6 @@ import regex
 
 from lb_matching_tools.guff import GUFF_PAREN_WORDS
 
-WORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyzªµºÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ"
 SYMBOLS = "1234567890!@#$%^&*()-=_+[]{};\"|;'\\<>?/.,~`"
 
 
@@ -48,9 +47,15 @@ class MetadataCleaner:
         self.artist_expressions = [re.compile(exp, re.IGNORECASE) for exp in self.ARTIST_EXPRESSIONS]
         self.foreign_script_expression = regex.compile(r"[^\p{Script=Common}\p{Script=" + preferred_script + r"}]+")
         self.paren_guff_expression = re.compile(r"(20[0-9]{2}|19[0-9]{2})")
+        self.letter_expression = regex.compile(r"\p{Letter}")
 
     def drop_foreign_chars(self, text: str):
-        return regex.sub(self.foreign_script_expression, "", text).strip()
+        remaining_text = regex.sub(self.foreign_script_expression, "", text).strip()
+        # only return the remaining text if it still contains at least one letter
+        if regex.search(self.letter_expression, remaining_text):
+            return remaining_text
+        else:
+            return text
 
     def is_paren_text_likely_guff(self, paren_text):
         """
@@ -77,9 +82,7 @@ class MetadataCleaner:
             if ch in SYMBOLS:
                 guff_chars += 1
 
-            # Does anyone how to include non-ascii word characters in python?
-            # \p{Letter} !!
-            if ch in WORD_CHARS:
+            if regex.match(self.letter_expression, ch):
                 chars += 1
 
         if guff_chars <= chars:
@@ -110,8 +113,6 @@ class MetadataCleaner:
         """
             Run the metadata cleaner against a recording name. Returns the cleaned string, which may be unchanged from the given string.
         """
-        text = self.drop_foreign_chars(text)
-
         cleaned = ""
         for i, exp in enumerate(self.recording_expressions):
             m = self.recording_expressions[i].match(text)
@@ -136,10 +137,10 @@ class MetadataCleaner:
                 if not self.paren_checker(cleaned):
                     cleaned = text
 
-        if len(cleaned) > 0:
-            return cleaned
-        else:
-            return text
+        if not len(cleaned):
+            cleaned = text
+
+        return self.drop_foreign_chars(cleaned)
 
     def clean_artist(self, text: str):
         """
