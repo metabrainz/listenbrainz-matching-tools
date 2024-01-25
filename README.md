@@ -37,14 +37,28 @@ mc.clean_recording("Tabula Rasa (feat. Lorraine Weiss)")
 mc.clean_artist("Amy Winhouse, Lorraine Weiss")
 ```
 
-
 Installation
 ------------
 
 To install this python module, simply do:
 
 ```
-python setup.py install
+pip install .
+```
+
+Development
+-----------
+
+Create virtual environment
+
+```
+python -m venv .venv
+```
+
+Install dependencies
+
+```
+pip install .
 ```
 
 Running tests
@@ -53,6 +67,7 @@ Running tests
 To run the internal unit tests, run:
 
 ```
+pip install .
 ./test.py
 ```
 
