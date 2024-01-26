@@ -1,0 +1,32 @@
+[project]
+name = "lb-matching-tools"
+authors = [
+  { name = "Robert Kaye", email="rob@metabrainz.org" }
+]
+description="ListenBrainz tools for matching metadata to and from MusicBrainz."
+readme = "README.md"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+  "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dynamic = ["version"]
+dependencies = [
+  'regex'
+]
+
+[project.urls]
+Homepage = "https://github.com/metabrainz/listenbrainz-matching-tools"
+
+[project.optional-dependencies]
+build = [
+  "build",
+  "twine"
+]
+
+[build-system]
+requires = ["setuptools>=64.0", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
