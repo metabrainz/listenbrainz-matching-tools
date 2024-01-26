@@ -21,5 +21,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install .
       - name: Test with pytest
-        run: |
-          ./test.py
+        run: pytest --junitxml=junit/test-results-${{ matrix.python-version }}.xml --cov=troi --cov-report=xml:junit/coverage-${{ matrix.python-version}}.xml
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: junit-${{ matrix.python-version }}
+          path: junit/*
+
