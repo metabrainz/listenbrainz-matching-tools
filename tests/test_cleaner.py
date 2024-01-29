@@ -1,4 +1,4 @@
-import unittest
+import pytest
 from lb_matching_tools.cleaner import MetadataCleaner
 
 
@@ -67,14 +67,12 @@ RECORDING_TEST_STRINGS = [
     ("Όσο Και Να Σ' Αγαπάω - Remix 2023", "Όσο Και Να Σ' Αγαπάω"),
 ]
 
-class TestMetadataCleaner(unittest.TestCase):
+@pytest.mark.parametrize("test_input,expected", ARTIST_TEST_STRINGS)
+def test_cleaner_artist(test_input, expected):
+    cl = MetadataCleaner()
+    assert cl.clean_artist(test_input) == expected
 
-    def test_cleaner_artist(self):
-        cl = MetadataCleaner()
-        for testcase in ARTIST_TEST_STRINGS:
-            self.assertEqual(cl.clean_artist(testcase[0]), testcase[1])
-
-    def test_cleaner_recording(self):
-        cl = MetadataCleaner()
-        for testcase in RECORDING_TEST_STRINGS:
-            self.assertEqual(cl.clean_recording(testcase[0]), testcase[1])
+@pytest.mark.parametrize("test_input,expected", RECORDING_TEST_STRINGS)
+def test_cleaner_recording(test_input, expected):
+    cl = MetadataCleaner()
+    assert cl.clean_recording(test_input) == expected
