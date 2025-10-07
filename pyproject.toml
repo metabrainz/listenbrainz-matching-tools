@@ -7,9 +7,9 @@ description="ListenBrainz tools for matching metadata to and from MusicBrainz."
 readme = "README.md"
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
   "Operating System :: OS Independent",
 ]
+license = "GPL-2.0-or-later"
 requires-python = ">=3.8"
 dynamic = ["version"]
 dependencies = [
@@ -32,5 +32,8 @@ build = [
 [build-system]
 requires = ["setuptools>=64.0", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["lb_matching_tools"]
 
 [tool.setuptools_scm]
