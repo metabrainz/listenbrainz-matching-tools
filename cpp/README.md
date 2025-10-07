@@ -5,7 +5,7 @@ This is a **header-only C++17** library that provides music metadata cleaning fu
 ## Features
 
 - 🎯 **Header-only**: No shared libraries needed - just include and use
-- ⚡ **High Performance**: C++17 with PCRE2 regex for fast text processing
+- ⚡ **High Performance**: C++17 with JPCRE2 regex wrapper for fast text processing
 - 🌍 **Unicode Support**: Handles international characters (Greek, Cyrillic, etc.)
 - 🧹 **Smart Cleaning**: Removes metadata noise while preserving meaningful content
 - ✅ **Thoroughly Tested**: 63 comprehensive tests covering real-world scenarios
@@ -16,6 +16,7 @@ This is a **header-only C++17** library that provides music metadata cleaning fu
 ### Prerequisites
 - C++17 compatible compiler
 - PCRE2 library: `sudo apt install libpcre2-dev` (Ubuntu/Debian)
+- JPCRE2 library: Automatically downloaded via CMake
 - CMake 3.15+ (for building tests/examples)
 
 ### Build and Test
@@ -50,7 +51,7 @@ int main() {
 
 ### Option 1: Copy Headers
 1. Copy `include/lb_matching_tools/` to your project
-2. Link against PCRE2 in your build system
+2. Ensure JPCRE2 and PCRE2 are available in your build system
 3. Include the headers and use
 
 ### Option 2: Use CMake
@@ -81,4 +82,4 @@ cpp/
 └── README.md                  # This file
 ```
 
-**Essential files for integration:** Just the `include/` directory and PCRE2 dependency.
+**Essential files for integration:** Just the `include/` directory and JPCRE2 + PCRE2 dependencies.

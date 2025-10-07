@@ -32,6 +32,22 @@ option(LB_MATCHING_BUILD_EXAMPLES "Build examples" ON)
 
 # Find required packages
 find_package(PkgConfig REQUIRED)
+
+# Try to find JPCRE2 first
+find_path(JPCRE2_INCLUDE_DIR jpcre2.hpp)
+if(NOT JPCRE2_INCLUDE_DIR)
+    # If not found, try to download it using FetchContent
+    include(FetchContent)
+    FetchContent_Declare(
+        jpcre2
+        GIT_REPOSITORY https://github.com/jpcre2/jpcre2.git
+        GIT_TAG master
+    )
+    FetchContent_MakeAvailable(jpcre2)
+    set(JPCRE2_INCLUDE_DIR ${jpcre2_SOURCE_DIR}/src)
+endif()
+
+# Still need PCRE2 as the underlying library for JPCRE2
 pkg_check_modules(PCRE2 REQUIRED libpcre2-8)
 
 if(NOT PCRE2_FOUND)
@@ -54,6 +70,7 @@ add_library(lb_matching_tools INTERFACE)
 target_include_directories(lb_matching_tools
     INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${JPCRE2_INCLUDE_DIR}
         ${PCRE2_INCLUDE_DIRS}
 )
 
@@ -63,7 +80,7 @@ target_link_libraries(lb_matching_tools
         ${PCRE2_LIBRARIES}
 )
 
-# Add PCRE2 compile definitions
+# Add PCRE2 compile definitions (needed by JPCRE2)
 target_compile_definitions(lb_matching_tools INTERFACE ${PCRE2_CFLAGS_OTHER})
 if(PCRE2_LDFLAGS)
     target_link_options(lb_matching_tools INTERFACE ${PCRE2_LDFLAGS})

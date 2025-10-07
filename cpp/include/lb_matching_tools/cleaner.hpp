@@ -10,8 +10,10 @@
 #include <stdexcept>
 #include <cstring>
 
-#define PCRE2_CODE_UNIT_WIDTH 8
-#include <pcre2.h>
+#include <jpcre2.hpp>
+
+// Type aliases for JPCRE2
+using jpc = jpcre2::select<char>;
 
 namespace lb_matching_tools {
 
@@ -46,76 +48,42 @@ struct MatchResult {
 };
 
 /**
- * @brief RAII wrapper for PCRE2 compiled regex patterns
+ * @brief JPCRE2-based wrapper for compiled regex patterns
  */
 class CompiledRegex {
 public:
-    explicit CompiledRegex(const std::string& pattern, bool case_insensitive = true, bool utf8 = true) 
-        : code_(nullptr), match_data_(nullptr) {
-        
-        int errornumber;
-        PCRE2_SIZE erroroffset;
-        
-        // Set up compile options
-        uint32_t options = 0;
-        if (case_insensitive) options |= PCRE2_CASELESS;
-        if (utf8) options |= PCRE2_UTF;
-        
-        // Compile the pattern
-        code_ = pcre2_compile(
-            reinterpret_cast<PCRE2_SPTR>(pattern.c_str()),
-            PCRE2_ZERO_TERMINATED,
-            options,
-            &errornumber,
-            &erroroffset,
-            nullptr
-        );
-        
-        if (code_ == nullptr) {
-            // Get error message
-            PCRE2_UCHAR buffer[256];
-            pcre2_get_error_message(errornumber, buffer, sizeof(buffer));
-            error_message_ = "PCRE2 compilation failed at offset " + 
-                            std::to_string(erroroffset) + ": " + 
-                            reinterpret_cast<char*>(buffer);
-            return;
-        }
-        
-        // Create match data
-        match_data_ = pcre2_match_data_create_from_pattern(code_, nullptr);
-        if (match_data_ == nullptr) {
-            error_message_ = "Failed to create PCRE2 match data";
-            pcre2_code_free(code_);
-            code_ = nullptr;
+    // Default constructor for member variables
+    CompiledRegex() : valid_(false) {}
+    
+    explicit CompiledRegex(const std::string& pattern, bool case_insensitive = true, bool utf8 = true) {
+        try {
+            // Set up compile options using string modifiers
+            std::string modifiers;
+            if (case_insensitive) modifiers += "i";
+            if (utf8) modifiers += "u"; // UTF-8 mode
+            
+            // Create and compile the regex
+            regex_.setPattern(pattern);
+            if (!modifiers.empty()) {
+                regex_.addModifier(modifiers);
+            }
+            regex_.compile();
+            
+            valid_ = true;
+        } catch (const std::exception& e) {
+            error_message_ = std::string("JPCRE2 compilation failed: ") + e.what();
+            valid_ = false;
         }
     }
 
-    ~CompiledRegex() {
-        cleanup();
-    }
+    ~CompiledRegex() = default;
     
     // Non-copyable, movable
     CompiledRegex(const CompiledRegex&) = delete;
     CompiledRegex& operator=(const CompiledRegex&) = delete;
     
-    CompiledRegex(CompiledRegex&& other) noexcept 
-        : code_(other.code_), match_data_(other.match_data_), 
-          error_message_(std::move(other.error_message_)) {
-        other.code_ = nullptr;
-        other.match_data_ = nullptr;
-    }
-
-    CompiledRegex& operator=(CompiledRegex&& other) noexcept {
-        if (this != &other) {
-            cleanup();
-            code_ = other.code_;
-            match_data_ = other.match_data_;
-            error_message_ = std::move(other.error_message_);
-            other.code_ = nullptr;
-            other.match_data_ = nullptr;
-        }
-        return *this;
-    }
+    CompiledRegex(CompiledRegex&&) = default;
+    CompiledRegex& operator=(CompiledRegex&&) = default;
     
     /**
      * @brief Match the pattern against input text
@@ -129,56 +97,51 @@ public:
             return result;
         }
         
-        // Perform the match
-        int rc = pcre2_match(
-            code_,
-            reinterpret_cast<PCRE2_SPTR>(text.data()),
-            text.length(),
-            0,      // start offset
-            0,      // options
-            match_data_,
-            nullptr // match context
-        );
-        
-        if (rc < 0) {
-            // No match or error
-            return result;
-        }
-        
-        result.matched = true;
-        
-        // Extract named groups if they exist
-        auto extract_group = [&](const char* name) -> std::string {
-            PCRE2_UCHAR* buffer;
-            PCRE2_SIZE bufflen;
-            int ret = pcre2_substring_get_byname(match_data_, 
-                                               reinterpret_cast<PCRE2_SPTR>(name), 
-                                               &buffer, &bufflen);
-            if (ret >= 0) {
-                std::string result(reinterpret_cast<char*>(buffer), bufflen);
-                pcre2_substring_free(buffer);
-                return result;
+        try {
+            // Create match object and perform the match
+            jpc::RegexMatch rm;
+            rm.setRegexObject(&regex_);
+            std::string text_str(text); // JPCRE2 needs std::string
+            
+            // Set up vectors to capture substrings
+            jpc::VecNum vec_num;
+            jpc::VecNas vec_nas;
+            rm.setNumberedSubstringVector(&vec_num)
+              .setNamedSubstringVector(&vec_nas)
+              .setSubject(text_str);
+            
+            size_t match_count = rm.match(); // Perform the match
+            
+            if (match_count > 0) {
+                result.matched = true;
+                
+                // Extract named groups if they exist  
+                auto extract_group = [&](const std::string& name) -> std::string {
+                    // vec_nas is a vector of maps, check each map for the named group
+                    for (const auto& group_map : vec_nas) {
+                        auto it = group_map.find(name);
+                        if (it != group_map.end()) {
+                            return it->second;
+                        }
+                    }
+                    return "";
+                };
+                
+                // Extract the named groups we're interested in
+                result.title = extract_group("title");
+                result.enclosed = extract_group("enclosed");
+                result.feat = extract_group("feat");
+                result.artists = extract_group("artists");
+                result.dash = extract_group("dash");
+                result.comma = extract_group("comma");
+                
+                // If no named groups, try positional groups
+                if (result.title.empty() && !vec_num.empty() && vec_num[0].size() > 1) {
+                    result.title = vec_num[0][1]; // vec_num[0][1] is the first capture group
+                }
             }
-            return "";
-        };
-        
-        // Extract the named groups we're interested in
-        result.title = extract_group("title");
-        result.enclosed = extract_group("enclosed");
-        result.feat = extract_group("feat");
-        result.artists = extract_group("artists");
-        result.dash = extract_group("dash");
-        result.comma = extract_group("comma");
-        
-        // If no named groups, try positional groups
-        if (result.title.empty() && rc > 1) {
-            PCRE2_UCHAR* buffer;
-            PCRE2_SIZE bufflen;
-            int ret = pcre2_substring_get_bynumber(match_data_, 1, &buffer, &bufflen);
-            if (ret >= 0) {
-                result.title = std::string(reinterpret_cast<char*>(buffer), bufflen);
-                pcre2_substring_free(buffer);
-            }
+        } catch (const std::exception&) {
+            // Match failed
         }
         
         return result;
@@ -187,7 +150,7 @@ public:
     /**
      * @brief Check if pattern compilation was successful
      */
-    bool is_valid() const { return code_ != nullptr; }
+    bool is_valid() const { return valid_; }
     
     /**
      * @brief Get compilation error message if any
@@ -195,25 +158,34 @@ public:
     const std::string& error_message() const { return error_message_; }
     
     /**
-     * @brief Get the internal PCRE2 code pointer (for advanced operations)
+     * @brief Get the internal JPCRE2 regex object (for advanced operations)
      */
-    pcre2_real_code_8* get_code() const { return code_; }
-
-private:
-    pcre2_real_code_8* code_;
-    mutable pcre2_real_match_data_8* match_data_;
-    std::string error_message_;
+    const jpc::Regex& get_regex() const { return regex_; }
     
-    void cleanup() {
-        if (match_data_) {
-            pcre2_match_data_free(match_data_);
-            match_data_ = nullptr;
+    /**
+     * @brief Substitute all matches with replacement text
+     */
+    std::string substitute(const std::string& text, const std::string& replacement = "") const {
+        if (!is_valid()) {
+            return text;
         }
-        if (code_) {
-            pcre2_code_free(code_);
-            code_ = nullptr;
+        
+        try {
+            jpc::RegexReplace rr;
+            rr.setRegexObject(&regex_)
+              .setReplaceWith(replacement)
+              .setSubject(text);
+              
+            return rr.replace();
+        } catch (const std::exception&) {
+            return text;
         }
     }
+
+private:
+    jpc::Regex regex_;
+    bool valid_ = false;
+    std::string error_message_;
 };
 
 /**
@@ -329,40 +301,34 @@ public:
             return std::string(text);
         }
         
-        // Use PCRE2 substitution to remove foreign script characters
-        PCRE2_SIZE output_length = text.length() * 2; // Start with enough space
-        std::vector<PCRE2_UCHAR> output_buffer(output_length);
+        // Use JPCRE2 substitution to remove foreign script characters
+        std::string text_str(text);
+        std::string remaining_text = foreign_script_expression_.substitute(text_str, "");
         
-        int result = pcre2_substitute(
-            foreign_script_expression_.get_code(),
-            reinterpret_cast<PCRE2_SPTR>(text.data()),
-            text.length(),
-            0,                              // start offset
-            PCRE2_SUBSTITUTE_GLOBAL,        // options - replace all matches
-            nullptr,                        // match data (can be null for substitute)
-            nullptr,                        // match context
-            reinterpret_cast<PCRE2_SPTR>(""), // replacement string (empty)
-            0,                              // replacement length (0 for empty string)
-            output_buffer.data(),
-            &output_length
-        );
+        // Trim whitespace
+        remaining_text.erase(0, remaining_text.find_first_not_of(" \t\n\r\f\v"));
+        remaining_text.erase(remaining_text.find_last_not_of(" \t\n\r\f\v") + 1);
         
-        if (result >= 0) {
-            // Successfully substituted
-            std::string remaining_text(reinterpret_cast<char*>(output_buffer.data()), output_length);
+        // Only return the remaining text if it contains substantial content
+        // and is significantly shorter than the original (meaning foreign chars were actually removed)
+        MatchResult letter_match = letter_expression_.match(remaining_text);
+        if (letter_match.matched && !remaining_text.empty()) {
+            // If the cleaned text is significantly shorter, it means foreign chars were removed
+            // Use cleaned version only if meaningful content remains and some removal occurred
+            size_t original_len = text_str.length();
+            size_t remaining_len = remaining_text.length();
             
-            // Trim whitespace
-            remaining_text.erase(0, remaining_text.find_first_not_of(" \t\n\r\f\v"));
-            remaining_text.erase(remaining_text.find_last_not_of(" \t\n\r\f\v") + 1);
-            
-            // Only return the remaining text if it still contains at least one letter
-            MatchResult letter_match = letter_expression_.match(remaining_text);
-            if (letter_match.matched && !remaining_text.empty()) {
-                return remaining_text;
+            if (original_len > 0 && remaining_len > 0) {
+                // If more than 40% was removed, likely foreign script removal - use cleaned version
+                // If less than 40% was removed, likely mixed or primarily foreign - keep original
+                double removal_ratio = (double)(original_len - remaining_len) / original_len;
+                if (removal_ratio >= 0.4) {
+                    return remaining_text;
+                }
             }
         }
         
-        // Fallback to original text if substitution failed or no letters remain
+        // Fallback to original text if substitution removed too much content or no letters remain
         return std::string(text);
     }
 
@@ -411,26 +377,7 @@ private:
         
         // Remove years using the year regex pattern
         if (year_expression_.is_valid()) {
-            PCRE2_SIZE output_length = text_lower.length() * 2;
-            std::vector<PCRE2_UCHAR> output_buffer(output_length);
-            
-            int result = pcre2_substitute(
-                year_expression_.get_code(),
-                reinterpret_cast<PCRE2_SPTR>(text_lower.data()),
-                text_lower.length(),
-                0,                              // start offset
-                PCRE2_SUBSTITUTE_GLOBAL,        // options - replace all matches
-                nullptr,                        // match data 
-                nullptr,                        // match context
-                reinterpret_cast<PCRE2_SPTR>(""), // replacement string (empty)
-                0,                              // replacement length (0 for empty string)
-                output_buffer.data(),
-                &output_length
-            );
-            
-            if (result >= 0) {
-                text_lower = std::string(reinterpret_cast<char*>(output_buffer.data()), output_length);
-            }
+            text_lower = year_expression_.substitute(text_lower, "");
         }
         
         size_t replaced = before_len - text_lower.length();
@@ -447,29 +394,22 @@ private:
         
         // Count Unicode letters using the letter regex (handles Greek, etc.)
         if (letter_expression_.is_valid()) {
-            PCRE2_SIZE offset = 0;
-            while (offset < text_lower.length()) {
-                pcre2_match_data *match_data = pcre2_match_data_create_from_pattern(letter_expression_.get_code(), nullptr);
+            try {
+                jpc::RegexMatch rm;
+                rm.setRegexObject(&letter_expression_.get_regex())
+                  .setSubject(text_lower)
+                  .setFindAll(); // Find all matches
                 
-                int result = pcre2_match(
-                    letter_expression_.get_code(),
-                    reinterpret_cast<PCRE2_SPTR>(text_lower.data()),
-                    text_lower.length(),
-                    offset,
-                    0,
-                    match_data,
-                    nullptr
-                );
-                
-                if (result > 0) {
-                    chars++;
-                    PCRE2_SIZE *ovector = pcre2_get_ovector_pointer(match_data);
-                    offset = ovector[1]; // Move past this match
-                } else {
-                    pcre2_match_data_free(match_data);
-                    break;
+                // Count matches (each match represents a letter)
+                size_t match_count = rm.match();
+                chars = match_count;
+            } catch (const std::exception&) {
+                // Fallback: count any characters that might be letters
+                for (char ch : text_lower) {
+                    if (std::isalpha(ch)) {
+                        chars++;
+                    }
                 }
-                pcre2_match_data_free(match_data);
             }
         }
         
